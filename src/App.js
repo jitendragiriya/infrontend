@@ -1,24 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import LoginWithGoogle from "./pages/Login";
+import axios from "axios";
+import { useAuth } from "./context/auth";
+import Header from "./components/Header";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  redirect,
+  Navigate
+} from "react-router-dom";
+import Home from "./pages/Home";
+import CourseDetails from "./components/CourseDetails";
+
+
 
 function App() {
+  const { token, setUser } = useAuth()
+  useEffect(() => {
+    if (token) {
+      axios.get(`${process.env.REACT_APP_BASE_URL}/api/profile`, {
+        headers: {
+          "token": token
+        }
+      }).then((res) => {
+        setUser(res?.data)
+      }).catch((err) => console.log(err))
+    }
+  }, [token])
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div>
+
+      <Router>
+        <Header />
+        <Routes>
+          {
+            token ?
+              <>    <Route path="/" element={<Home />} />
+                <Route path="/:id" element={<CourseDetails />} /></> :
+              <Route path="*" element={<LoginWithGoogle />} />
+          }
+
+        </Routes>
+      </Router>
+    </div >
+
   );
 }
 
