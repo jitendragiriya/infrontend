@@ -7,7 +7,8 @@ import { useAuth } from "../context/auth";
 const LoginWithGoogle = () => {
     const { setToken } = useAuth()
     const successResponse = async (response) => {
-        await axios.post(`${process.env.REACT_APP_BASE_URL}/api/auth/google`, { token: response?.tokenId }).then((res) => {
+        console.log(response)
+        await axios.post(`${process.env.REACT_APP_BASE_URL}/api/auth/google`, { token: response?.credential }).then((res) => {
             localStorage.setItem(TOKEN, res?.data?.token)
             setToken(res?.data?.token)
         }).catch((err) => { })
@@ -26,8 +27,7 @@ const LoginWithGoogle = () => {
                         <GoogleLogin
                             buttonText="Login With Google"
                             onSuccess={successResponse}
-                            onError={failureResponse} 
-                             
+                            onError={failureResponse}                             
                             
                         /></GoogleOAuthProvider>
                 </div>
