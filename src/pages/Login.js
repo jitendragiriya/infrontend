@@ -6,8 +6,7 @@ import { useAuth } from "../context/auth";
 
 const LoginWithGoogle = () => {
     const { setToken } = useAuth()
-    const successResponse = async (response) => {
-        console.log(response)
+    const successResponse = async (response) => { 
         await axios.post(`${process.env.REACT_APP_BASE_URL}/api/auth/google`, { token: response?.credential }).then((res) => {
             localStorage.setItem(TOKEN, res?.data?.token)
             setToken(res?.data?.token)
